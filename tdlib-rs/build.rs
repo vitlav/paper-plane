@@ -38,6 +38,32 @@ fn load_tl(file: &str) -> std::io::Result<Vec<Definition>> {
         .collect())
 }
 
+/// Select the TL schema matching the TDLib the crate is linked with.
+///
+/// The JSON interface of TDLib is not stable between versions, so the
+/// generated API has to match the schema of the system library exactly.
+/// The schema can be forced with the `TDLIB_RS_TL_FILE` environment
+/// variable. When the system TDLib is found with pkg-config, the schema
+/// `tl/api_<tdjson version>.tl` is required; otherwise the bundled
+/// `tl/api.tl` is used.
+fn schema_file(tdjson_version: Option<&str>) -> String {
+    if let Ok(file) = env::var("TDLIB_RS_TL_FILE") {
+        return file;
+    }
+    if let Some(version) = tdjson_version {
+        let file = format!("tl/api_{version}.tl");
+        if !Path::new(&file).exists() {
+            panic!(
+                "No TL schema for TDLib {version}: add {file} \
+                 (td/generate/scheme/td_api.tl of that TDLib release) \
+                 or set TDLIB_RS_TL_FILE"
+            );
+        }
+        return file;
+    }
+    "tl/api.tl".to_string()
+}
+
 #[cfg(feature = "local-tdlib")]
 /// Copy all files from a directory to another.
 fn copy_dir_all(src: impl AsRef<Path>, dst: impl AsRef<Path>) -> std::io::Result<()> {
@@ -284,6 +310,9 @@ fn main() -> std::io::Result<()> {
     #[cfg(feature = "local-tdlib")]
     println!("cargo:rerun-if-env-changed=LOCAL_TDLIB_PATH");
 
+    #[allow(unused_mut)]
+    let mut tdjson_version: Option<String> = None;
+
     // Prevent linking libraries to avoid documentation failure
     #[cfg(not(feature = "docs"))]
     {
@@ -291,7 +320,12 @@ fn main() -> std::io::Result<()> {
         // - export PKG_CONFIG_PATH=$HOME/lib/tdlib/lib/pkgconfig/:$PKG_CONFIG_PATH
         // - export LD_LIBRARY_PATH=$HOME/lib/tdlib/lib/:$LD_LIBRARY_PATH
         #[cfg(feature = "pkg-config")]
-        system_deps::Config::new().probe().unwrap();
+        {
+            let deps = system_deps::Config::new().probe().unwrap();
+            if let Some(tdjson) = deps.get_by_name("tdjson") {
+                tdjson_version = Some(tdjson.version.clone());
+            }
+        }
 
         #[cfg(feature = "download-tdlib")]
         download_tdlib();
@@ -307,7 +341,11 @@ fn main() -> std::io::Result<()> {
 
     let out_dir = env::var("OUT_DIR").unwrap();
 
-    let definitions = load_tl("tl/api.tl")?;
+    println!("cargo:rerun-if-env-changed=TDLIB_RS_TL_FILE");
+    let tl_file = schema_file(tdjson_version.as_deref());
+    println!("cargo:rerun-if-changed={tl_file}");
+    println!("cargo:warning=tdlib-rs: generating API from {tl_file}");
+    let definitions = load_tl(&tl_file)?;
 
     let mut file = BufWriter::new(File::create(Path::new(&out_dir).join("generated.rs"))?);
 

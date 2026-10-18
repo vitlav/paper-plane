@@ -45,7 +45,7 @@ features = [
 ]
 
 [package.metadata.system-deps]
-tdjson = "1.8.61"
+tdjson = "1.8.65"
 
 [features]
 bots-only-api = []
