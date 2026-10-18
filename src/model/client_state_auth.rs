@@ -77,7 +77,7 @@ impl ClientStateAuth {
             });
         }
 
-        self.set_state(Some(match update.authorization_state {
+        let state = match update.authorization_state {
             WaitPhoneNumber => model::ClientStateAuthPhoneNumber::from(self).upcast(),
             WaitCode(data) => match self
                 .state()
@@ -109,7 +109,14 @@ impl ClientStateAuth {
             WaitRegistration(registration) => {
                 model::ClientStateAuthRegistration::new(self, registration).upcast()
             }
-            other => unreachable!("Unsupported state during auth: {other:?}"),
-        }));
+            // TDLib may ask for a login email address, an email code or a
+            // Premium purchase, which are not implemented yet. Keep the current
+            // page instead of aborting the whole application.
+            other => {
+                log::error!("Unsupported state during auth: {other:?}");
+                return;
+            }
+        };
+        self.set_state(Some(state));
     }
 }
