@@ -5,7 +5,7 @@ authors = ["Marco Melorio <marco.melorio@protonmail.com>", "Marcus Behrendt <mar
 edition = "2021"
 
 [package.metadata.system-deps]
-tdjson = "1.8.61"
+tdjson = "1.8.65"
 
 [dependencies]
 adw = { version = "0.6", package = "libadwaita", features = ["v1_5"] }
@@ -35,3 +35,7 @@ tdlib = { version = "1.4", package = "tdlib-rs", features = ["pkg-config"] }
 [profile.release]
 lto = true
 codegen-units = 1
+
+# tdlib-rs with TL schemas matching the system TDLib (see tdlib-rs/build.rs).
+[patch.crates-io]
+tdlib-rs = { path = "tdlib-rs" }

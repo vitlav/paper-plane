@@ -165,20 +165,25 @@ impl SendMediaWindow {
 
         let content = if send_as_file {
             InputMessageContent::InputMessageDocument(InputMessageDocument {
-                document: file,
-                thumbnail: None,
-                disable_content_type_detection: true,
+                document: tdlib::types::InputDocument {
+                    document: file,
+                    thumbnail: None,
+                    disable_content_type_detection: true,
+                },
                 caption,
             })
         } else {
             let paintable = imp.picture.paintable().unwrap();
 
             InputMessageContent::InputMessagePhoto(InputMessagePhoto {
-                photo: file,
-                thumbnail: None,
-                added_sticker_file_ids: vec![],
-                width: paintable.intrinsic_width(),
-                height: paintable.intrinsic_height(),
+                photo: tdlib::types::InputPhoto {
+                    photo: file,
+                    thumbnail: None,
+                    video: None,
+                    added_sticker_file_ids: vec![],
+                    width: paintable.intrinsic_width(),
+                    height: paintable.intrinsic_height(),
+                },
                 caption,
                 show_caption_above_media: false,
                 self_destruct_type: None,
@@ -194,6 +199,7 @@ impl SendMediaWindow {
             message_id: *imp.reply_to.get().unwrap(),
             quote: None,
             checklist_task_id: 0,
+            poll_option_id: String::new(),
         }));
 
         match tdlib::functions::send_message(chat_id, None, reply_to, None, content, client_id)

@@ -93,7 +93,7 @@ The following packages are required to build Paper Plane:
 - GTK >= 4.10 (with the patch included in the build-aux directory)
 - libadwaita >= 1.4
 - libshumate >= 1.0.0
-- [TDLib 1.8.61](https://github.com/tdlib/td/commit/11e254af695060d8890024dd7faa1cc2d6685ef8)
+- TDLib 1.8.65 (the TL schema of every supported TDLib version is kept in `tdlib-rs/tl/api_<version>.tl`)
 - [Telegram API Credentials](https://my.telegram.org/) (optional, but recommended)
 
 Additionally, Paper Plane requires the following GStreamer plugins installed in your system to correctly show all media files:

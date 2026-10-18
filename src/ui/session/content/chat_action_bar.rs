@@ -537,6 +537,7 @@ impl ChatActionBar {
                             message_id,
                             quote: None,
                             checklist_task_id: 0,
+                            poll_option_id: String::new(),
                         },
                     ))
                 } else {
@@ -613,21 +614,26 @@ impl ChatActionBar {
                         message_id: reply_to_message_id,
                         quote: None,
                         checklist_task_id: 0,
+                        poll_option_id: String::new(),
                     },
                 ))
             } else {
                 None
             };
-            let draft_message =
-                self.compose_text_message()
-                    .await
-                    .map(|message| tdlib::types::DraftMessage {
-                        reply_to,
-                        date: glib::DateTime::now_local().unwrap().to_unix() as i32,
-                        input_message_text: message,
-                        effect_id: 0,
-                        suggested_post_info: None,
-                    });
+            let draft_message = self.imp().message_entry.as_markdown().await.map(|text| {
+                tdlib::types::DraftMessage {
+                    reply_to,
+                    date: glib::DateTime::now_local().unwrap().to_unix() as i32,
+                    content: tdlib::enums::DraftMessageContent::Text(
+                        tdlib::types::DraftMessageContentText {
+                            text,
+                            link_preview_options: None,
+                        },
+                    ),
+                    effect_id: 0,
+                    suggested_post_info: None,
+                }
+            });
 
             // Save draft message
             let result =
@@ -648,16 +654,11 @@ impl ChatActionBar {
             self.set_state(ChatActionBarState::Composing);
         }
 
-        if let tdlib::enums::InputMessageContent::InputMessageText(content) =
-            message.0.input_message_text
-        {
+        if let tdlib::enums::DraftMessageContent::Text(content) = message.0.content {
             imp.message_entry
                 .set_formatted_text(Some(model::BoxedFormattedText(content.text)));
         } else {
-            log::warn!(
-                "Unexpected draft message type: {:?}",
-                message.0.input_message_text
-            );
+            log::warn!("Unexpected draft message type: {:?}", message.0.content);
             imp.message_entry.set_formatted_text(None);
         }
     }

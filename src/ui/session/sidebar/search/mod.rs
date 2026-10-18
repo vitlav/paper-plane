@@ -193,7 +193,7 @@ impl Search {
         }
 
         // Search chats locally (or get the recently found chats if the query is empty)
-        match tdlib::functions::search_chats(query.clone(), 30, session.client_().id()).await {
+        match tdlib::functions::search_chats(query.clone(), None, 30, session.client_().id()).await {
             Ok(tdlib::enums::Chats::Chats(mut data)) if !data.chat_ids.is_empty() => {
                 list.append(&Section::new(if query.is_empty() {
                     SectionType::Recent
@@ -231,6 +231,7 @@ impl Search {
         // Search known chats on server
         match tdlib::functions::search_chats_on_server(
             query.clone(),
+            None,
             MAX_KNOWN_CHATS - found_chat_ids.len() as i32,
             session.client_().id(),
         )
@@ -303,7 +304,7 @@ impl Search {
         }
 
         // Search public chats
-        match tdlib::functions::search_public_chats(query, session.client_().id()).await {
+        match tdlib::functions::search_public_chats(query, None, session.client_().id()).await {
             Ok(tdlib::enums::Chats::Chats(data)) if !data.chat_ids.is_empty() => {
                 list.append(&Section::new(SectionType::Global));
 

@@ -344,7 +344,7 @@ impl Row {
                     ).unwrap_or_default() => {
                     self.update_specific_content::<_, ui::MessageSticker>(message_);
                 }
-                MessageLocation(_) => {
+                MessageLocation(_) | MessageLiveLocation(_) => {
                     self.update_specific_content::<_, ui::MessageLocation>(message_);
                 }
                 MessagePhoto(_) => {
