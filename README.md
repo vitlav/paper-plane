@@ -94,7 +94,7 @@ The following packages are required to build Paper Plane:
 - libadwaita >= 1.4
 - libshumate >= 1.0.0
 - libvpx (development headers)
-- [TDLib 1.8.61](https://github.com/tdlib/td/commit/11e254af695060d8890024dd7faa1cc2d6685ef8)
+- [TDLib 1.8.65](https://github.com/tdlib/td/commit/a8f21f5230172634becc1739050ef23ecd6ea291)
 - [Telegram API Credentials](https://my.telegram.org/) (optional, but recommended)
 
 Additionally, Paper Plane requires the following GStreamer plugins installed in your system to correctly show all media files:

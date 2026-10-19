@@ -83,7 +83,7 @@
                 {
                     "type": "git",
                     "url": "https://github.com/tdlib/td.git",
-                    "commit": "11e254af695060d8890024dd7faa1cc2d6685ef8"
+                    "commit": "a8f21f5230172634becc1739050ef23ecd6ea291"
                 }
             ]
         },
