@@ -5,7 +5,7 @@ authors = ["Marco Melorio <marco.melorio@protonmail.com>", "Marcus Behrendt <mar
 edition = "2021"
 
 [package.metadata.system-deps]
-tdjson = "1.8.61"
+tdjson = "1.8.65"
 
 [features]
 default = ["download-tdlib"]

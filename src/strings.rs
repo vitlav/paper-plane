@@ -452,13 +452,8 @@ pub(crate) fn message_content(message: &model::Message) -> String {
 
     match message.content().0 {
         MessageText(data) => data.text.text,
-        MessageLocation(data) => {
-            if data.live_period > 0 {
-                gettext("Live Location")
-            } else {
-                gettext("Location")
-            }
-        }
+        MessageLocation(_) => gettext("Location"),
+        MessageLiveLocation(_) => gettext("Live Location"),
         MessageAnimation(data) => message_animation(&data.caption.text),
         MessageAudio(data) => {
             message_audio(&data.audio.title, &data.audio.performer, &data.caption.text)

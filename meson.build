@@ -21,7 +21,7 @@ dependency('shumate-1.0', version: '>= 1')
 # "download-tdlib" (the default) the prebuilt binary is fetched by cargo and no
 # system TDLib is required, so the dependency is not probed here.
 if get_option('tdlib-backend') == 'pkg-config'
-  dependency('tdjson', version: '== 1.8.61')
+  dependency('tdjson', version: '== 1.8.65')
 endif
 
 glib_compile_resources = find_program('glib-compile-resources', required: true)

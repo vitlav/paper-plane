@@ -255,6 +255,7 @@ impl MessageIndicators {
                 && !matches!(
                     message.content().0,
                     tdlib::enums::MessageContent::MessageLocation(_)
+                        | tdlib::enums::MessageContent::MessageLiveLocation(_)
                 )
             {
                 format!("{} {}", gettext("edited"), datetime)

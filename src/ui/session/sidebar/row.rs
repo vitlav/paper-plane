@@ -653,7 +653,7 @@ fn sender_label(message: model::Message) -> Option<String> {
 
     // Just use a sender label for specific messages.
     match message.content().0 {
-        MessageText(_) | MessageLocation(_) | MessageSticker(_) | MessagePhoto(_)
+        MessageText(_) | MessageLocation(_) | MessageLiveLocation(_) | MessageSticker(_) | MessagePhoto(_)
         | MessageAudio(_) | MessageAnimation(_) | MessageVideo(_) | MessageDocument(_)
         | MessageVoiceNote(_) | MessageCall(_) | MessageVenue(_) => {}
         _ => return None,
@@ -714,8 +714,8 @@ fn message_thumbnail_texture(message: model::Message) -> Option<gdk::Texture> {
 }
 
 fn draft_message_text(message: tdlib::types::DraftMessage) -> String {
-    match message.input_message_text {
-        tdlib::enums::InputMessageContent::InputMessageText(data) => data.text.text,
+    match message.content {
+        tdlib::enums::DraftMessageContent::Text(data) => data.text.text,
         other => {
             log::warn!("Unexpected draft message type: {other:?}");
             String::new()
