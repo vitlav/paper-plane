@@ -490,20 +490,13 @@ impl ChatHistory {
     fn sponsored_message_count(&self) -> u32 {
         let imp = self.imp();
 
-        let Some(selection) = imp.list_view.model() else {
-            return 0;
-        };
-        let Some(no_selection) = selection.downcast_ref::<gtk::NoSelection>() else {
-            return 0;
-        };
-        let Some(flatten_model) = no_selection.model().and_downcast::<gtk::FlattenListModel>()
-        else {
+        let Some(list_model) = imp.list_view.model() else {
             return 0;
         };
 
         let history_count = imp.model.borrow().as_ref().map_or(0, |m| m.n_items());
 
-        flatten_model.n_items().saturating_sub(history_count)
+        list_model.n_items().saturating_sub(history_count)
     }
 
     /// Loads a window of messages around the anchor of the chat history and
@@ -533,6 +526,10 @@ impl ChatHistory {
 
         position += self.sponsored_message_count();
 
+        // The list view shows the history in reverse order (newest at the bottom)
+        let n_items = imp.list_view.model().map_or(0, |m| m.n_items());
+        let position = n_items.saturating_sub(1).saturating_sub(position);
+
         imp.list_view
             .scroll_to(position, gtk::ListScrollFlags::NONE, None);
     }
@@ -556,6 +553,9 @@ impl ChatHistory {
 
         let list_view_model = self.create_list_model(chat, model);
 
+        // The model keeps the newest message first, the list view shows the
+        // newest message at the bottom.
+        let list_view_model = model::ReversedListModel::new(&list_view_model);
         let selection = gtk::NoSelection::new(Some(list_view_model));
         imp.list_view.set_model(Some(&selection));
 
