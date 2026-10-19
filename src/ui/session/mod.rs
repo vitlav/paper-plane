@@ -170,7 +170,7 @@ mod imp {
 
 glib::wrapper! {
     pub(crate) struct Session(ObjectSubclass<imp::Session>)
-        @extends gtk::Widget,
+        @extends adw::Bin, gtk::Widget,
         @implements gtk::Accessible, gtk::Buildable, gtk::ConstraintTarget;
 }
 
