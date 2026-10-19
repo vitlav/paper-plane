@@ -5,7 +5,8 @@ Check the GtkBuilder files against the GTK and libadwaita of this system.
 Every object of a GTK, libadwaita or libshumate class must exist, and every
 property, binding and signal set on it must exist on that class. Objects of
 the application's own classes (Papl*) are not checked here: their templates
-are built by the `templates_build_without_warnings` test.
+are built by the `templates_build_without_warnings` test. A GtkLinkButton
+must have a URI: without one, clicking it is a critical warning.
 
 gtk4-builder-tool validate cannot do this: it stops at the first object of a
 class it does not know (any Adw* or Papl* one).
@@ -102,6 +103,11 @@ def check_object(element, class_name, where, errors):
     if cls is None:
         errors.append(f"{where}: unknown object type {class_name}")
         return
+
+    names = {child.get("name") for child in element if child.tag == "property"}
+    if issubclass(cls, Gtk.LinkButton) and "uri" not in names:
+        # clicking it opens a NULL URI: g_uri_peek_scheme assertion fails
+        errors.append(f"{where}: {class_name} without uri (use a Button with the link style class)")
 
     for child in element:
         name = child.get("name")
