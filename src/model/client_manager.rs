@@ -1,7 +1,10 @@
 use std::cell::RefCell;
+use std::collections::HashSet;
 use std::fs;
 use std::sync::OnceLock;
 use std::thread;
+use std::time::Duration;
+use std::time::Instant;
 use std::time::SystemTime;
 use std::time::UNIX_EPOCH;
 
@@ -23,7 +26,12 @@ mod imp {
     use super::*;
 
     #[derive(Debug, Default)]
-    pub(crate) struct ClientManager(pub(super) RefCell<IndexMap<i32, model::Client>>);
+    pub(crate) struct ClientManager(
+        pub(super) RefCell<IndexMap<i32, model::Client>>,
+        /// Clients that still have to report `authorizationStateClosed` while
+        /// the application is quitting (`None` when not quitting).
+        pub(super) RefCell<Option<HashSet<ClientId>>>,
+    );
 
     #[glib::object_subclass]
     impl ObjectSubclass for ClientManager {
@@ -264,10 +272,52 @@ impl ClientManager {
                     tdlib::enums::Update::AuthorizationState(state)
                         if state.authorization_state == tdlib::enums::AuthorizationState::Closed)
                 {
-                    client.remove();
+                    if let Some(closing) = self.imp().1.borrow_mut().as_mut() {
+                        // Closed because the application is quitting: keep the session
+                        closing.remove(&id);
+                    } else {
+                        client.remove();
+                    }
                 } else {
                     client.handle_update(update);
                 }
+            }
+        }
+    }
+
+    /// Close all TDLib instances and wait until they are closed.
+    ///
+    /// TDLib must not be running when the process exits: its threads crash in
+    /// the static destructors of libtdjson otherwise.
+    pub(crate) fn close_all(&self) {
+        let imp = self.imp();
+        if imp.1.borrow().is_some() {
+            return;
+        }
+
+        let ids: HashSet<ClientId> = imp.0.borrow().keys().copied().collect();
+        if ids.is_empty() {
+            return;
+        }
+        imp.1.replace(Some(ids.clone()));
+
+        for id in ids {
+            utils::spawn(async move {
+                if let Err(e) = tdlib::functions::close(id).await {
+                    log::warn!("Error on closing client {id}: {e:?}");
+                }
+            });
+        }
+
+        let context = glib::MainContext::default();
+        let deadline = Instant::now() + Duration::from_secs(10);
+        while imp.1.borrow().as_ref().is_some_and(|closing| !closing.is_empty()) {
+            if Instant::now() >= deadline {
+                log::warn!("Timed out waiting for TDLib clients to close");
+                break;
+            }
+            if !context.iteration(false) {
+                thread::sleep(Duration::from_millis(10));
             }
         }
     }

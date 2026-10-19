@@ -131,6 +131,11 @@ impl Application {
                 if let Err(err) = app.main_window().save_window_size() {
                     log::warn!("Failed to save window state, {}", err);
                 }
+                // Let TDLib save its state and stop before the process exits
+                app.main_window()
+                    .client_manager_view()
+                    .client_manager()
+                    .close_all();
                 app.quit();
             }
         ));

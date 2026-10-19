@@ -99,6 +99,12 @@ mod imp {
 
                 glib::Propagation::Stop
             } else {
+                // Let TDLib save its state and stop before the process exits
+                self.obj()
+                    .client_manager_view()
+                    .client_manager()
+                    .close_all();
+
                 // Pass close request on to the parent
                 self.parent_close_request()
             }
