@@ -6,8 +6,8 @@
 
   <name xml:lang="en">Paper Plane</name>
   <shortdesc xml:lang="en">Chat over Telegram on a modern and elegant client</shortdesc>
-  <homepage rdf:resource="https://github.com/paper-plane-developers/paper-plane"/>
-  <bug-database rdf:resource="https://github.com/paper-plane-developers/paper-plane/issues"/>
+  <homepage rdf:resource="https://github.com/vitlav/paper-plane"/>
+  <bug-database rdf:resource="https://github.com/vitlav/paper-plane/issues"/>
   <programming-language>Rust</programming-language>
 
   <maintainer>

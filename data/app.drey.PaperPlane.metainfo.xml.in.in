@@ -25,7 +25,7 @@
   </description>
   <screenshots>
     <screenshot type="default">
-      <image>https://github.com/paper-plane-developers/paper-plane/raw/main/data/resources/screenshots/screenshot1.png</image>
+      <image>https://github.com/vitlav/paper-plane/raw/master/data/resources/screenshots/screenshot1.png</image>
       <caption>Main window</caption>
     </screenshot>
   </screenshots>
@@ -38,7 +38,7 @@
     <display_length compare="ge">360</display_length>
   </requires>
   <url type="homepage">https://github.com/paper-plane-developers/paper-plane</url>
-  <url type="bugtracker">https://github.com/paper-plane-developers/paper-plane/issues</url>
+  <url type="bugtracker">https://github.com/vitlav/paper-plane/issues</url>
   <url type="vcs-browser">https://github.com/paper-plane-developers/paper-plane</url>
   <url type="translate">https://hosted.weblate.org/engage/paper-plane</url>
   <content_rating type="oars-1.1" />
