@@ -90,7 +90,7 @@ The following packages are required to build Paper Plane:
 
 - meson
 - cargo
-- GTK >= 4.10 (with the patch included in the build-aux directory)
+- GTK >= 4.16
 - libadwaita >= 1.4
 - libshumate >= 1.0.0
 - libvpx (development headers)

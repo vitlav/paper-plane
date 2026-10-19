@@ -51,28 +51,6 @@
             ]
         },
         {
-            "name": "gtk",
-            "buildsystem": "meson",
-            "config-opts": [
-                "-Dintrospection=disabled",
-                "-Dbuild-demos=false",
-                "-Dbuild-testsuite=false",
-                "-Dbuild-examples=false",
-                "-Dbuild-tests=false"
-            ],
-            "sources": [
-                {
-                    "type": "git",
-                    "url": "https://gitlab.gnome.org/GNOME/gtk.git",
-                    "tag": "4.22.4"
-                },
-                {
-                    "type": "patch",
-                    "path": "gtk-reversed-list.patch"
-                }
-            ]
-        },
-        {
             "name": "tdlib",
             "buildsystem": "cmake-ninja",
             "builddir": true,
