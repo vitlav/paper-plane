@@ -10,8 +10,8 @@
   <a href="https://hosted.weblate.org/engage/paper-plane/">
     <img src="https://hosted.weblate.org/widgets/paper-plane/-/main/svg-badge.svg" alt="Translation status" />
   </a>
-  <a href="https://github.com/paper-plane-developers/paper-plane/actions/workflows/ci.yml">
-    <img src="https://github.com/paper-plane-developers/paper-plane/actions/workflows/ci.yml/badge.svg" alt="CI status"/>
+  <a href="https://github.com/vitlav/paper-plane/actions/workflows/ci.yml">
+    <img src="https://github.com/vitlav/paper-plane/actions/workflows/ci.yml/badge.svg" alt="CI status"/>
   </a>
   <a href="https://repology.org/project/paper-plane/versions">
     <img src="https://repology.org/badge/tiny-repos/paper-plane.svg" alt="Packaging status">
@@ -29,6 +29,16 @@
 
 Paper Plane is an alternative Telegram client.
 It uses libadwaita for its user interface and strives to meet the design principles of the GNOME desktop.
+
+> [!NOTE]
+> This is a maintained continuation of
+> [paper-plane-developers/paper-plane](https://github.com/paper-plane-developers/paper-plane),
+> which is no longer developed. The `master` branch is the upstream `main`
+> plus a port to [tdlib-rs](https://github.com/FedericoBruzzone/tdlib-rs)
+> and the current TDLib: it builds against TDLib 1.8.65 (the API is generated
+> from the TL schema of the system TDLib). Pull requests from the original
+> repository are reviewed and merged here. The fork is maintained by the
+> ALT Linux packager of Paper Plane.
 
 Paper Plane is still under development and not yet feature-complete.
 However, the following things are already working:
