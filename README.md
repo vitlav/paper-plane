@@ -124,7 +124,7 @@ requests are left unreviewed. When we asked in
 whether someone could be assigned to approve pull requests, the answer was that
 reviewing takes real effort and
 ["if you really want that, you can make a fork"](https://github.com/paper-plane-developers/paper-plane/issues/575#issuecomment-2645812300).
-So we did, and we maintain it: the `master` branch of this repository contains
+So we did, and we maintain it: the `main` branch of this repository contains
 
 - the upstream `main` branch, including everything merged after v0.1.0-beta.5
   (runtime configurable API credentials, marking messages as read, telling
