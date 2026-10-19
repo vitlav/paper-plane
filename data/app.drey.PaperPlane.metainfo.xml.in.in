@@ -43,6 +43,27 @@
   <url type="translate">https://hosted.weblate.org/engage/paper-plane</url>
   <content_rating type="oars-1.1" />
   <releases>
+    <release version="0.1.0~beta.6" date="2026-10-19">
+      <description translatable="no">
+        <p>This is the sixth beta release of Paper Plane 0.1.0, the first one from the maintained fork, with an updated TDLib and bug fixes:</p>
+        <ul>
+          <li>Paper Plane now uses tdlib-rs and works with TDLib 1.8.65; the TDLib API is generated from the schema of the system TDLib, so logging in with a newer TDLib no longer hangs.</li>
+          <li>Logging in no longer panics on unexpected authorization states.</li>
+          <li>Messages are marked as read when they are viewed. (#630, #633)</li>
+          <li>The API credentials can be given at runtime. (#635)</li>
+          <li>Initial support for the Replies chat. (#467)</li>
+          <li>Secret chats got their own style. (#625)</li>
+          <li>The application no longer crashes on quit: TDLib clients are closed before quitting.</li>
+          <li>No panic when a session is logging out or closing.</li>
+          <li>Sessions on the test data centers (--test-dc) are kept apart from the production ones.</li>
+          <li>The Flatpak build uses the old GL renderer. (#631)</li>
+          <li>The doap file and the appdata have been fixed. (#572, #621)</li>
+          <li>Dependencies have been updated: gtk-rs 0.9, libadwaita-rs 0.7, libshumate 0.6. (#627, #644)</li>
+          <li>Translations have been updated. (#618)</li>
+          <li>Project links point to the maintained fork.</li>
+        </ul>
+      </description>
+    </release>
     <release version="0.1.0~beta.5" date="2023-11-03">
       <description translatable="no">
         <p>This is the fifth beta release of Paper Plane 0.1.0 with new features and bug fixes:</p>
