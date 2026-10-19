@@ -161,32 +161,7 @@ mod imp {
                         }
                     } else {
                         obj.set_sticky(adj.value() + adj.page_size() >= adj.upper());
-
-                        if adj.value() >= adj.page_size() * 2.0
-                            && adj.upper() > adj.page_size() * 2.0
-                        {
-                            return;
-                        }
-
-                        if let Some(model) = imp.model.borrow().as_ref() {
-                            imp.is_loading_messages.set(true);
-
-                            utils::spawn(clone!(
-                                #[weak]
-                                obj,
-                                #[weak]
-                                model,
-                                async move {
-                                    obj.imp().is_loading_messages.set(false);
-
-                                    if let Err(model::ChatHistoryError::Tdlib(e)) =
-                                        model.load_older_messages(2).await
-                                    {
-                                        log::warn!("Couldn't load more chat messages: {:?}", e);
-                                    }
-                                }
-                            ));
-                        }
+                        obj.load_older_messages_if_needed();
                     }
                 }
             ));
@@ -198,6 +173,10 @@ mod imp {
                     if obj.sticky() || obj.imp().is_auto_scrolling.get() {
                         obj.scroll_down();
                     }
+
+                    // Older messages are added above the visible ones, so keep
+                    // loading them until there is enough history to scroll up.
+                    obj.load_older_messages_if_needed();
                 }
             ));
         }
@@ -424,27 +403,18 @@ impl ChatHistory {
                     let scrollbar = imp.scrolled_window.vscrollbar();
                     scrollbar.set_visible(false);
 
-                    let adj = imp.list_view.vadjustment().unwrap();
-                    adj.set_value(0.0);
-
-                    while adj.value() == 0.0 {
-                        match model.load_older_messages(2).await {
-                            Ok(can_load_more) => {
-                                if !can_load_more {
-                                    break;
-                                }
-                            }
-                            Err(e) => {
-                                log::warn!("Couldn't load initial history messages: {}", e);
-                                break;
-                            }
-                        }
+                    if let Err(model::ChatHistoryError::Tdlib(e)) =
+                        model.load_older_messages(2).await
+                    {
+                        log::warn!("Couldn't load initial history messages: {:?}", e);
                     }
 
                     scrollbar.set_visible(true);
 
                     imp.is_loading_messages.set(false);
                     obj.set_sticky(true);
+                    obj.scroll_down();
+                    obj.load_older_messages_if_needed();
 
                     obj.view_messages();
                 }
@@ -461,6 +431,9 @@ impl ChatHistory {
             ));
             imp.chat_handler.replace(Some(handler));
 
+            // The model keeps the newest message first, the list view shows
+            // the newest message at the bottom.
+            let list_view_model = model::ReversedListModel::new(&list_view_model);
             let selection = gtk::NoSelection::new(Some(list_view_model));
             imp.list_view.set_model(Some(&selection));
 
@@ -497,6 +470,35 @@ impl ChatHistory {
 
         self.imp().is_secret_chat.set(is_secret_chat);
         self.notify("is-secret-chat");
+    }
+
+    /// Loads older messages when the view is less than two pages away from the
+    /// top of the history.
+    ///
+    /// Does nothing while the initial messages of the chat are loading.
+    fn load_older_messages_if_needed(&self) {
+        let imp = self.imp();
+
+        if imp.is_loading_messages.get() {
+            return;
+        }
+
+        let adj = imp.list_view.vadjustment().unwrap();
+        if adj.value() >= adj.page_size() * 2.0 && adj.upper() > adj.page_size() * 2.0 {
+            return;
+        }
+
+        let Some(model) = imp.model.borrow().clone() else {
+            return;
+        };
+
+        // The model refuses to load while it is already loading, and the
+        // messages it adds change the upper bound, which calls this again.
+        utils::spawn(async move {
+            if let Err(model::ChatHistoryError::Tdlib(e)) = model.load_older_messages(2).await {
+                log::warn!("Couldn't load more chat messages: {:?}", e);
+            }
+        });
     }
 
     fn scroll_down(&self) {
