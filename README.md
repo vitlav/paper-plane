@@ -33,12 +33,7 @@ It uses libadwaita for its user interface and strives to meet the design princip
 > [!NOTE]
 > This is a maintained continuation of
 > [paper-plane-developers/paper-plane](https://github.com/paper-plane-developers/paper-plane),
-> which is no longer developed. The `master` branch is the upstream `main`
-> plus a port to [tdlib-rs](https://github.com/FedericoBruzzone/tdlib-rs)
-> and the current TDLib: it builds against TDLib 1.8.65 (the API is generated
-> from the TL schema of the system TDLib). Pull requests from the original
-> repository are reviewed and merged here. The fork is maintained by the
-> ALT Linux packager of Paper Plane.
+> which has not been developed since June 2024. See [Why this fork](#why-this-fork).
 
 Paper Plane is still under development and not yet feature-complete.
 However, the following things are already working:
@@ -120,6 +115,46 @@ meson . _build -Dtg_api_id=ID -Dtg_api_hash=HASH
 ninja -C _build
 sudo ninja -C _build install
 ```
+
+## Why this fork
+
+The original repository has had no commits since June 2024, and its pull
+requests are left unreviewed. When we asked in
+[issue #575 "project status"](https://github.com/paper-plane-developers/paper-plane/issues/575)
+whether someone could be assigned to approve pull requests, the answer was that
+reviewing takes real effort and
+["if you really want that, you can make a fork"](https://github.com/paper-plane-developers/paper-plane/issues/575#issuecomment-2645812300).
+So we did, and we maintain it: the `master` branch of this repository contains
+
+- the upstream `main` branch, including everything merged after v0.1.0-beta.5
+  (runtime configurable API credentials, marking messages as read, telling
+  TDLib about opened and closed chats, dependency updates);
+- every upstream pull request that could be merged:
+  [#467](https://github.com/paper-plane-developers/paper-plane/pull/467) (replies chat),
+  [#572](https://github.com/paper-plane-developers/paper-plane/pull/572) (doap syntax),
+  [#618](https://github.com/paper-plane-developers/paper-plane/pull/618) (translations),
+  [#624](https://github.com/paper-plane-developers/paper-plane/pull/624) (README dependencies),
+  [#625](https://github.com/paper-plane-developers/paper-plane/pull/625) (secret chat style),
+  [#631](https://github.com/paper-plane-developers/paper-plane/pull/631) (old GL renderer in the Flatpak),
+  [#644](https://github.com/paper-plane-developers/paper-plane/pull/644) (gtk-rs 0.9 and libadwaita-rs 0.7);
+- a port to [tdlib-rs](https://github.com/FedericoBruzzone/tdlib-rs) and the
+  current TDLib: it builds against TDLib 1.8.65, and the API is generated from
+  the TL schema of the system TDLib;
+- fixes found while testing: clean shutdown of the TDLib clients, separate
+  sessions for the test data centers, no panics on unsupported authorization
+  states, and a chat history that works with a stock GTK.
+
+Pull requests that are drafts or need a rebase before they can be merged
+([#508](https://github.com/paper-plane-developers/paper-plane/pull/508)/[#591](https://github.com/paper-plane-developers/paper-plane/pull/591),
+[#523](https://github.com/paper-plane-developers/paper-plane/pull/523)/[#470](https://github.com/paper-plane-developers/paper-plane/pull/470)
+and others) are tracked, and new pull requests to the original repository are
+reviewed and merged here.
+
+Another fork was announced in
+[issue #646](https://github.com/paper-plane-developers/paper-plane/issues/646)
+([Sk7Str1p3/PaperPlane](https://github.com/Sk7Str1p3/PaperPlane)); its main
+branch has no changes besides a Nix development shell. The fork is maintained by
+the ALT Linux packager of Paper Plane.
 
 ## Contribution
 
