@@ -4,6 +4,8 @@ mod components;
 mod login;
 mod session;
 mod window;
+#[cfg(test)]
+mod tests;
 
 use gtk::glib::prelude::*;
 

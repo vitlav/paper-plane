@@ -76,3 +76,45 @@ test (
   ],
   timeout: 300, # Give cargo more time
 )
+
+# Checks of the GtkBuilder files against the GTK and libadwaita of the system:
+# without a patched GTK, an unknown property only shows up as a critical
+# warning when the widget is created, and the widget then panics.
+python3 = find_program('python3', required: false)
+if python3.found()
+  test(
+    'validate-ui',
+    python3,
+    args: [
+      meson.project_source_root() / 'build-aux' / 'validate-ui.py',
+      meson.current_source_dir() / 'ui',
+      meson.current_build_dir() / 'ui',
+      meson.project_build_root() / 'data' / 'resources',
+    ],
+    depends: [resources, ui_resources],
+    suite: 'ui',
+  )
+endif
+
+# Unit tests, among them the one that builds every widget template (it needs
+# a display and is skipped without one).
+test(
+  'cargo-test',
+  cargo,
+  args: [
+    'test',
+    '--manifest-path=@0@'.format(manifest_path),
+    '--target-dir=@0@'.format(meson.project_build_root() / 'src'),
+    '--',
+    '--test-threads=1',
+    '--nocapture',
+  ],
+  env: [
+    'CARGO_HOME=@0@'.format(cargo_home),
+    'PAPER_PLANE_RESOURCES=@0@'.format(meson.project_build_root() / 'data' / 'resources' / 'resources.gresource'),
+    'PAPER_PLANE_UI_RESOURCES=@0@'.format(meson.current_build_dir() / 'ui' / 'ui-resources.gresource'),
+  ],
+  depends: [resources, ui_resources],
+  suite: 'ui',
+  timeout: 1800,
+)
