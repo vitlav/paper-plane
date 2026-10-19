@@ -78,6 +78,12 @@ mod imp {
                 log::warn!("Failed to save window state, {}", err);
             }
 
+            // Let TDLib save its state and stop before the process exits
+            self.obj()
+                .client_manager_view()
+                .client_manager()
+                .close_all();
+
             // Pass close request on to the parent
             self.parent_close_request()
         }
