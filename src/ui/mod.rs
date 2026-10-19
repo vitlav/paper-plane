@@ -41,6 +41,7 @@ pub(crate) use self::session::ContactsWindow;
 pub(crate) use self::session::Content;
 pub(crate) use self::session::EventRow;
 pub(crate) use self::session::MediaAlbumGrid;
+pub(crate) use self::session::MediaDownloadButton;
 pub(crate) use self::session::MediaPhotoTile;
 pub(crate) use self::session::MediaPicture;
 pub(crate) use self::session::MediaThumbnail;
@@ -119,6 +120,7 @@ pub(crate) fn init() {
     MapMarker::static_type();
     MapWindow::static_type();
     MediaAlbumGrid::static_type();
+    MediaDownloadButton::static_type();
     MediaPhotoTile::static_type();
     MediaPicture::static_type();
     MediaThumbnail::static_type();

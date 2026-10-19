@@ -26,6 +26,7 @@ pub(crate) use self::media_viewer::MediaViewer;
 pub(crate) use self::media_viewer::ViewerEntry;
 pub(crate) use self::media_viewer::ViewerItem;
 pub(crate) use self::message_row::MediaAlbumGrid;
+pub(crate) use self::message_row::MediaDownloadButton;
 pub(crate) use self::message_row::MediaPhotoTile;
 pub(crate) use self::message_row::MediaPicture;
 pub(crate) use self::message_row::MediaThumbnail;

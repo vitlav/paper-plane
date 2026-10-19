@@ -26,6 +26,7 @@ pub(crate) use self::content::ChatInfoWindow;
 pub(crate) use self::content::Content;
 pub(crate) use self::content::EventRow;
 pub(crate) use self::content::MediaAlbumGrid;
+pub(crate) use self::content::MediaDownloadButton;
 pub(crate) use self::content::MediaPhotoTile;
 pub(crate) use self::content::MediaPicture;
 pub(crate) use self::content::MediaThumbnail;
