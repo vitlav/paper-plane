@@ -84,7 +84,8 @@ impl ClientView {
                 } else if let Some(state) = state.downcast_ref::<model::ClientStateSession>() {
                     ui::Session::from(state).upcast::<gtk::Widget>()
                 } else {
-                    panic!();
+                    // Logging out or closing: nothing to interact with any more
+                    adw::Spinner::new().upcast::<gtk::Widget>()
                 }
             }))
             .bind(&*self.imp().bin, "child", Some(self));
