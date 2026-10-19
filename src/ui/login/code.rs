@@ -30,7 +30,7 @@ mod imp {
         #[template_child]
         pub(super) next_button_stack: TemplateChild<gtk::Stack>,
         #[template_child]
-        pub(super) resend_link_button: TemplateChild<gtk::LinkButton>,
+        pub(super) resend_link_button: TemplateChild<gtk::Button>,
     }
 
     #[glib::object_subclass]

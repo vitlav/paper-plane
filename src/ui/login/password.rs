@@ -36,7 +36,7 @@ mod imp {
         #[template_child]
         pub(super) next_button_stack: TemplateChild<gtk::Stack>,
         #[template_child]
-        pub(super) password_forgotten_link_button: TemplateChild<gtk::LinkButton>,
+        pub(super) password_forgotten_link_button: TemplateChild<gtk::Button>,
 
         #[template_child]
         pub(super) password_forgotten_input_box: TemplateChild<gtk::Box>,

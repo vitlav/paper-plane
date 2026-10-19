@@ -61,10 +61,11 @@ template $PaplLoginPhoneNumber {
             }
           }
 
-          LinkButton {
+          Button {
             margin-top: 12;
             action-name: "login.phone-number.use-qr-code";
             label: _("Quick login using QR code");
+            styles ["link"]
           }
 
           Spinner qr_code_spinner {
