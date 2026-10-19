@@ -77,6 +77,15 @@ mod imp {
             match analyze_data_dir() {
                 Err(e) => panic!("Could not initialize data directory: {e}"),
                 Ok(database_infos) => {
+                    // Sessions of the test data centers and of the production ones are kept
+                    // apart: with --test-dc only the test sessions are loaded, without it only
+                    // the production ones.
+                    let test_dc = APPLICATION_OPTS.get().unwrap().test_dc;
+                    let database_infos = database_infos
+                        .into_iter()
+                        .filter(|database_info| database_info.use_test_dc == test_dc)
+                        .collect::<Vec<_>>();
+
                     if database_infos.is_empty() {
                         obj.add_new_client(APPLICATION_OPTS.get().unwrap().test_dc);
                     } else {
